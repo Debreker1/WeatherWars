@@ -1,3 +1,5 @@
+const path = require("path");
+
 module.exports = {
   // Uncommenting the defaults below 
   // provides for an easier quick-start with Ganache.
@@ -18,4 +20,5 @@ module.exports = {
     }
   }
   */
+ contracts_build_directory: path.join(__dirname, "src/contracts")
 };

@@ -2,8 +2,9 @@ import * as React from 'react';
 import { Button } from '@material-ui/core/';
 import ResponsiveDrawer from '../../components/Header'
 import getWeb3 from '../../web3/getWeb3';
-import { Accounts } from 'web3-eth-accounts';
 
+const contract = require("truffle-contract");
+const weatherContract = require("../../contracts/WeatherContract.json"); 
 
 type Props = {};
 type State = {
@@ -31,6 +32,18 @@ class Home extends React.Component<Props, State>
             ...this.state,
             accounts: account
         })
+        this.artifactsToContract(weatherContract)
+        .then((WeatherContractAbstraction) => {
+            WeatherContractAbstraction.deployed().then((deployed : any) => {
+                console.log(deployed);
+            })
+        })
+    }
+
+    artifactsToContract = async (artifacts : any) => {
+        const contractAbstraction = contract(artifacts);
+        contractAbstraction.setProvider(this.state.web3.currentProvider);
+        return contractAbstraction
     }
 
     public render()
