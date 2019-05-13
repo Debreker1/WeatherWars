@@ -371,6 +371,41 @@
                   "id": 192,
                   "nodeType": "ExpressionStatement",
                   "src": "334:71:3"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [],
+                    "expression": {
+                      "argumentTypes": [],
+                      "id": 193,
+                      "name": "update",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 237,
+                      "src": "415:6:3",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_internal_nonpayable$__$returns$__$",
+                        "typeString": "function ()"
+                      }
+                    },
+                    "id": 194,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "415:8:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 195,
+                  "nodeType": "ExpressionStatement",
+                  "src": "415:8:3"
                 }
               ]
             },
@@ -1252,6 +1287,41 @@
                   "id": 192,
                   "nodeType": "ExpressionStatement",
                   "src": "334:71:3"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [],
+                    "expression": {
+                      "argumentTypes": [],
+                      "id": 193,
+                      "name": "update",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 237,
+                      "src": "415:6:3",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_internal_nonpayable$__$returns$__$",
+                        "typeString": "function ()"
+                      }
+                    },
+                    "id": 194,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "415:8:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 195,
+                  "nodeType": "ExpressionStatement",
+                  "src": "415:8:3"
                 }
               ]
             },
@@ -1877,7 +1947,7 @@
     }
   },
   "schemaVersion": "3.0.9",
-  "updatedAt": "2019-05-06T12:35:10.323Z",
+  "updatedAt": "2019-05-13T15:45:55.606Z",
   "devdoc": {
     "methods": {}
   },
