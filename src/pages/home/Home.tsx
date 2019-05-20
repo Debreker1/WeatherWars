@@ -4,6 +4,10 @@ import ResponsiveDrawer from '../../components/Header'
 import getWeb3 from '../../web3/getWeb3';
 import WeatherContract from "../../contracts/WeatherContract.json";
 
+import { connect } from 'react-redux'
+
+import {betActions} from '../../_actions/bet.actions';
+
 type Props = {};
 type State = {
     web3: any,
@@ -14,8 +18,15 @@ type State = {
 class Home extends React.Component<Props, State>
 {
 
+    constructor(props){
+        super(props);
+
+        props.setBet("Name");
+    }
+
     public async componentDidMount()
     {
+
         try
         {
            const web3 = await getWeb3();
@@ -46,7 +57,7 @@ class Home extends React.Component<Props, State>
             console.log("pay up!");
             contract.methods.update().send({from: account})
         });
-
+        
         // createdContract.methods.update().call();
     }
 
@@ -62,4 +73,14 @@ class Home extends React.Component<Props, State>
     }
 }
 
-export default Home
+function mapStateToProps(state) {
+    const {} = state;
+    return {
+    };
+}
+  
+  const mapDispatchToProps = dispatch => ({
+    setBet: name => dispatch(betActions.setBet(name))
+  })
+  
+  export default connect(mapStateToProps, mapDispatchToProps)(Home);
