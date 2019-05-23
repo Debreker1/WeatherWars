@@ -10,8 +10,9 @@ class Home extends React.Component
         return(
             <div>
                 <ResponsiveDrawer />
-                <p>Dit is de homepage</p>
-                <Button variant="contained" color="primary">Hello world</Button>
+                <div>
+                    <p1>Home</p1>
+                </div>
             </div>
         )
     }
