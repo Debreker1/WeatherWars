@@ -4,7 +4,7 @@ import ResponsiveDrawer from '../../components/Header'
 import getWeb3 from '../../web3/getWeb3';
 import WeatherContract from "../../contracts/WeatherContract.json";
 
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 
 import {betActions} from '../../_actions/bet.actions';
 
