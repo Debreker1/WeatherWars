@@ -7,6 +7,7 @@ const initialState = {
 export function betReducer(state = initialState, action) {
     switch (action.type) {
         case betConstants.SetBet:
+        console.log("REDUCER!");
             state = {
                 name: action.payload
             };

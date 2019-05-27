@@ -6,9 +6,10 @@ import WeatherContract from "../../contracts/WeatherContract.json";
 
 import { connect } from 'react-redux'
 
-import {betActions} from '../../_actions/bet.actions';
+import {setBet} from '../../_actions/bet.actions';
+import {setWeb3} from '../../_actions/web3.actions';
 
-type Props = {};
+type Props = DispatchProps
 type State = {
     web3: any,
     accounts: any,
@@ -18,22 +19,20 @@ type State = {
 class Home extends React.Component<Props, State>
 {
 
-    constructor(props){
-        super(props);
-
-        props.setBet("Name");
-    }
-
     public async componentDidMount()
     {
-
+        console.log("I'm fired");
+        
         try
         {
+            console.log("try start");
            const web3 = await getWeb3();
+           console.log("Got web3");
            web3.eth.transactionConfirmationBlocks = 1;
+           console.log("setbet");
+           this.props.setBet("bet");
            const accounts = await web3.eth.getAccounts();
            const networkId = await web3.eth.net.getId();
-
            this.state = {
             web3: web3,
             accounts: accounts,
@@ -79,8 +78,9 @@ function mapStateToProps(state) {
     };
 }
   
-  const mapDispatchToProps = dispatch => ({
-    setBet: name => dispatch(betActions.setBet(name))
-  })
+interface DispatchProps {
+    setBet: typeof setBet;
+    setWeb3: typeof setWeb3;
+}
   
-  export default connect(mapStateToProps, mapDispatchToProps)(Home);
+  export default connect(mapStateToProps, { setBet, setWeb3 } )(Home);

@@ -1,24 +1,53 @@
 import * as React from 'react';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import Home from './pages/home/Home';
-import { Provider } from 'react-redux'
-import store from './_store/store';
 
+import {setWeb3} from './_actions/web3.actions';
+import { connect } from 'react-redux';
+import getWeb3 from './web3/getWeb3';
 
-class Client extends React.Component
+type Props = DispatchProps
+type State = {
+    web3: any,
+    accounts: any,
+    networkId: number
+};
+
+class Client extends React.Component<Props, State>
 {
+
+    public async componentDidMount(){
+        try {
+            const web3 = await getWeb3();
+           console.log("Got web3");
+           web3.eth.transactionConfirmationBlocks = 1;
+           console.log("setbet");
+           this.props.setWeb3(web3);
+        } catch(e){
+            console.log(e);
+        }
+    }
+
     public render()
     {
         return(
-            <Provider store= {store}>
                 <BrowserRouter>
                     <Switch>
                         <Route exact={true} path="/" component={Home} />
                     </Switch>
                 </BrowserRouter>
-            </Provider>
         )
     }
 }
 
-export default Client
+function mapStateToProps(state) {
+    const {} = state;
+    return {
+    };
+}
+  
+interface DispatchProps {
+    setWeb3: typeof setWeb3;
+}
+  
+  export default connect(mapStateToProps, { setWeb3 } )(Client);
