@@ -34,6 +34,7 @@ class Client extends React.Component<Props, State>
                 <BrowserRouter>
                     <Switch>
                         <Route exact={true} path="/" component={Home} />
+                        <Route exact={true} path="/bets/add" component={AddBet}/>
                     </Switch>
                 </BrowserRouter>
         )
