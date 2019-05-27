@@ -44,3 +44,6 @@ You can learn more in the [Create React App documentation](https://facebook.gith
 To learn React, check out the [React documentation](https://reactjs.org/).
 
 ## Run Projects
+Open twee terminals en voer de volgende commando's uit:
+In terminal één voer je `truffle develop` uit.
+In de andere terminal voer je `ethereum-bridge -H 127.0.0.1:9545 -a 1 --dev` uit. Let wel op dat de port overeenkomt met de port die wordt getoond in het éérste commando/terminal.
