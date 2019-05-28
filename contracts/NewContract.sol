@@ -7,33 +7,34 @@ contract BettingContract is usingOraclize
     using Strings for string;
 
     address owner;
-    uint totalReceived;
     uint playerCount = 0;
     uint betAmount;
+    int initialBet;
 
+    uint public temperature;
     event NewOraclizeQuery(string description);
     event NewTemperature(string temperature);
 
     struct Player {
         address addr; //The address of their account
-        string guess; //What they've made as prediction
-        //Currently guess is a string, but it might need to get translated to an integer so it can accomodate the proper operators.
+        bool higher; //Whether their guess was higher than the owner's guess. True = higher, False = lower.
     }
 
     Player[] players;
 
     //When called for, Oraclize needs to be called and the Total needs to be updated.
-    constructor(uint startTime, string memory place, string memory startGuess) public payable
+    constructor(uint startTime, int initial) public payable
     {
         owner = msg.sender;
         betAmount = msg.value;
+        initialBet = initial;
+
         OAR = OraclizeAddrResolverI(0x6f485C8BF6fc43eA212E93BBF8ce046C7f1cb475);
-        AddPlayer(startGuess);
-        getWeather(startTime, place);
+        getWeather(startTime);
 
     }
 
-    function AddPlayer(string memory guess) public payable
+    function AddPlayer(bool guessedHigher) public payable
     {
         if (msg.value != betAmount){
             msg.sender.transfer(msg.value);
@@ -46,7 +47,7 @@ contract BettingContract is usingOraclize
             //Add player to a struct, and add it to the array.
             Player memory player;
             player.addr = msg.sender;
-            player.guess = guess;
+            player.higher = guessedHigher; //TODO! Add all Trues to a separate array, and all False to a separate array.
             players.push(player);
 
             //Update the Total for each player added.
@@ -54,15 +55,9 @@ contract BettingContract is usingOraclize
         }
     }
 
-    //The Total needs to be counted, so that it can be sent (in total) to the winner(s)
-    function updateTotalReceived() internal
-    {
-        totalReceived += msg.value;
-    }
-
 
     //Function that contains the actions of Oraclize.
-    function getWeather(uint _time, string memory _location) public
+    function getWeather(uint _time) public
     {
         emit NewOraclizeQuery("Query was sent waiting for response....");
         oraclize_query(_time, "WolframAlpha",  "Temperature in Rotterdam");
@@ -70,11 +65,36 @@ contract BettingContract is usingOraclize
 
 
     //This function will do everything needed to give the winnings to the winner of the bet.
-    function Ending(/* temperature and winner(?) */) public
+    function _callback(string memory _result) public
     {
-        //totalReceived should get sent to the winner.
-        //Thus, the winner needs to be chosen.
-        //I have yet to decide/figure out what the correct place for the code to calculate the winner is.
+        //totalReceived should get sent to the winner(s).
+        //Thus, the winner(s) need(s) to be chosen.
 
+        //This results in a loop if the owner did not win.
+
+        if(msg.sender != oraclize_cbAddress()) revert();
+        emit NewTemperature(_result);
+        temperature = parseInt(_result);
+
+        if (initialBet == temperature){
+            //Send everything in the contract back to the owner, since he won!
+            msg.owner.transfer(this.balance); //TODO! Wss niet correct
+        }
+        else{
+            //
+            /*If initialBet > temperature
+                for each player in higher {
+                    msg.sender.transfer(this.balance / higher.Length)
+                }
+            else
+                {
+                for each player in lower {
+                msg.sender.transfer(this.balance / higher.Length)
+                }
+            }
+
+
+            */
+        }
     }
 }
