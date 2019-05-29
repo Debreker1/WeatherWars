@@ -1,11 +1,8 @@
-import { betConstants } from "../_constants";
-export const betActions = {
-    setBet
-} 
+import { betConstants } from "../_constants"; 
 
-function setBet(name) {
+export const setBet = (web3) => {
     return {
         type: betConstants.SetBet,
-        payload: name
+        payload: web3
     }
 }
