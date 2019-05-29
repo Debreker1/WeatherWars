@@ -19,10 +19,9 @@ class Client extends React.Component<Props, State>
 
     public async componentDidMount(){
         try {
-            const web3 = await getWeb3();
+           const web3 = await getWeb3();
            console.log("Got web3");
            web3.eth.transactionConfirmationBlocks = 1;
-           console.log("setbet");
            this.props.setWeb3(web3);
         } catch(e){
             console.log(e);

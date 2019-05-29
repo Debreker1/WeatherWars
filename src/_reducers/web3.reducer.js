@@ -8,11 +8,12 @@ export function web3Reducer(state = initialState, action) {
     switch (action.type) {
         case web3Constants.SET_WEB3:
             state = {
+                ...this.state,
                 Web3: action.payload
             };
             break;
         default:
-            break;
+            return state;
         }
     return state;
 }
