@@ -1,29 +1,27 @@
 pragma solidity ^0.5.0;
 import "./oraclizeAPI_0.5.sol";
-import "./Strings.sol";
 
 contract BettingContract is usingOraclize
 {
-    using Strings for string;
 
-    address owner;
+    address payable owner;
     uint playerCount = 0;
     uint betAmount;
-    int initialBet;
+    uint initialBet;
 
     uint public temperature;
     event NewOraclizeQuery(string description);
     event NewTemperature(string temperature);
 
     struct Player {
-        address addr; //The address of their account
+        address payable addr; //The address of their account
         bool higher; //Whether their guess was higher than the owner's guess. True = higher, False = lower.
     }
 
     Player[] players;
 
     //When called for, Oraclize needs to be called and the Total needs to be updated.
-    constructor(uint startTime, int initial) public payable
+    constructor(uint startTime, uint initial) public payable
     {
         owner = msg.sender;
         betAmount = msg.value;
@@ -51,8 +49,12 @@ contract BettingContract is usingOraclize
             players.push(player);
 
             //Update the Total for each player added.
-            updateTotalReceived();
+            updateTotalReceived(msg.value);
         }
+    }
+
+    function updateTotalReceived(uint amount) internal {
+        betAmount += amount;
     }
 
 
@@ -78,7 +80,7 @@ contract BettingContract is usingOraclize
 
         if (initialBet == temperature){
             //Send everything in the contract back to the owner, since he won!
-            msg.owner.transfer(this.balance); //TODO! Wss niet correct
+            owner.transfer(address(this).balance);
         }
         else{
             //
