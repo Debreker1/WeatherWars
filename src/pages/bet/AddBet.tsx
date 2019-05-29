@@ -1,12 +1,19 @@
 import * as React from 'react';
-import getWeb3 from '../../web3/getWeb3';
-import WeatherBet from '../../contracts/WeatherBet.json';
+import { connect } from 'react-redux'
+import WeatherBet from '../../contracts/BettingContract.json';
 
-type Props = {};
+enum status {
+  Add,
+  Deploying,
+  Done,
+  Error
+}
+
+type Props = stateProps;
 type State = {
   betAmount: number,
-  web3: any,
-  account: string
+  accounts: string[],
+  status: status
 };
 
 class AddBet extends React.Component<Props, State> {
@@ -15,20 +22,17 @@ class AddBet extends React.Component<Props, State> {
     super(props);
     this.state = {
       betAmount: 1,
-      web3: null,
-      account: ''
+      accounts: [],
+      status: status.Add
     }
   }
 
   async componentDidMount() {
-    const web3 = await getWeb3();
-    const accounts = await web3.eth.getAccounts();
+    const accounts : string[] = await this.props.web3.eth.getAccounts();
     this.setState({
       ...this.state,
-      web3: web3,
-      account: accounts[0]
+      accounts: accounts
     });
-    this.state.web3.eth.transactionConfirmationBlocks = 1;
   }
 
   handleChange = (event) => {
@@ -42,24 +46,31 @@ class AddBet extends React.Component<Props, State> {
 
   deployContract = async (e) => {
     e.preventDefault();
-    const valueAmount = await this.state.web3.utils.toWei(this.state.betAmount, "ether")
-    const weatherContract = await new this.state.web3.eth.Contract(WeatherBet.abi);
-    const betDeploy = await weatherContract.deploy({
-      data: WeatherBet.bytecode,
-      arguments: [5]
-    });
-    const gasAmount = await betDeploy.estimateGas({from: this.state.account, value: valueAmount});
-    console.log(gasAmount);
-    betDeploy.send({
-      from: this.state.account,
-      value: valueAmount,
-      gas: 3000000
-    });
+    try {
+      this.setState({status: status.Deploying});
+      const valueAmount = await this.props.web3.utils.toWei(this.state.betAmount, "ether")
+      const weatherContract = await new this.props.web3.eth.Contract(WeatherBet.abi);
+      const betDeploy = await weatherContract.deploy({
+        data: WeatherBet.bytecode,
+        arguments: [5, valueAmount]
+      });
+      // const gasAmount = await betDeploy.estimateGas({from: this.state.accounts[0], value: valueAmount});
+      betDeploy.send({
+        from: this.state.accounts[0],
+        value: valueAmount,
+        gas: 3000000
+      });
+      this.setState({status: status.Done});
+    } catch(err) {
+      this.setState({status: status.Error});
+      console.error(err);
+    }
   };
 
   public render() {
     return (
       <div>
+        <p>Current status: {this.state.status}</p>
         <h1>Add bet</h1>
         <form className="createBet-login" onSubmit={this.deployContract}>
           <div>
@@ -75,4 +86,13 @@ class AddBet extends React.Component<Props, State> {
   }
 }
 
-export default AddBet;
+interface stateProps {
+  web3: any
+  // accounts: string[]
+};
+
+const mapStateToProps = (state: any) => ({
+  web3: state.Web3
+});
+
+export default connect(mapStateToProps)(AddBet);
