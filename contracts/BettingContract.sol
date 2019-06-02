@@ -8,6 +8,7 @@ contract BettingContract is usingOraclize
     uint playerCount = 0;
     uint betAmount;
     uint initialBet;
+    uint i;
 
     uint public temperature;
     event NewOraclizeQuery(string description);
@@ -19,6 +20,7 @@ contract BettingContract is usingOraclize
     }
 
     Player[] players;
+    Player[] winners;
 
     //When called for, Oraclize needs to be called and the Total needs to be updated.
     constructor(uint startTime, uint initial) public payable
@@ -84,7 +86,25 @@ contract BettingContract is usingOraclize
         }
         else{
             //
-            /*If initialBet > temperature
+            if (initialBet > temperature) {
+                for (i = 0; i < players.length; i++) {
+                    if (players[i].higher == true){
+                        winners.push(players[i]);
+                    }
+                }
+            }
+            else{
+                for (i = 0; i < players.length; i++) {
+                    if (players[i].higher == false){
+                        winners.push(players[i]);
+                    }
+                }
+            }
+
+            for (i = 0; i < winners.length; i++){
+                winners[i].addr.transfer(betAmount / winners.length);
+            }
+                /*
                 for each player in higher {
                     msg.sender.transfer(this.balance / higher.Length)
                 }
