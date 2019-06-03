@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import Home from './pages/home/Home';
-import AddBet from './pages/bet/AddBet'
+import AddBet from './pages/bets/AddBet'
 
 import {setWeb3} from './_actions/web3.actions';
 import { connect } from 'react-redux';
