@@ -1,5 +1,4 @@
 import * as React from 'react';
-import ResponsiveDrawer from '../../components/Header';
 
 type Props = {};
 type State = {};
@@ -11,8 +10,10 @@ class Home extends React.Component<Props, State>
     {
         return(
             <div>
-                <ResponsiveDrawer />
-                <p>Dit is de homepage</p>
+                <h1>Home</h1>
+                <p>De beste en meest betrouwbare applicatie voor het wedden op het weer</p>
+                <p>Bepaal zelf je weddenschap of doe mee met een actieve weddenschap</p>
+                <img src="https://cdn.24.co.za/files/Cms/General/d/5731/803a771e26d24ad9a644f9fd8e2cb5b9.jpg"></img>
             </div>
         )
     }
