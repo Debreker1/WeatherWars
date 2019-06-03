@@ -1,7 +1,8 @@
 import { web3Constants } from '../_constants';
 
 const initialState = {
-    Web3: ""
+    Web3: "",
+    Accounts: ""
 };
 
 export function web3Reducer(state = initialState, action) {
@@ -11,7 +12,12 @@ export function web3Reducer(state = initialState, action) {
                 ...state,
                 Web3: action.payload
             };
-            break;
+        case web3Constants.SET_ACCOUNTS:
+            state = {
+                ...state,
+                Accounts: action.payload
+            }    
+        break;
         default:
             return state;
         }

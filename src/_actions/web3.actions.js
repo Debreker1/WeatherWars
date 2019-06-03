@@ -6,3 +6,10 @@ export const setWeb3 = (web3) => {
         payload: web3
     }
 }
+
+export const setAccounts = (accounts) => {
+    return {
+        type: web3Constants.SET_ACCOUNTS,
+        payload: accounts
+    }
+}
