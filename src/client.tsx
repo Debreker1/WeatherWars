@@ -17,7 +17,11 @@ type State = {
 class Client extends React.Component<Props, State>
 {
 
-    public async componentDidMount(){
+    constructor(props) {
+        super(props);
+    }
+
+    public async componentWillMount(){
         try {
            const web3 = await getWeb3();
            console.log("Got web3");
