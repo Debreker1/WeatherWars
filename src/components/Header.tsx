@@ -35,7 +35,9 @@ function ButtonAppBar(props: Props) {
           <Typography variant="h6" color="inherit" className={classes.grow}>
             Weather Wars
           </Typography>
-          <Button color="inherit">Login</Button>
+          <Button color="inherit" href="/">Home</Button>
+          <Button color="inherit" href="bets/add">Create bet</Button>
+          <Button color="inherit" href="bets">Active bets</Button>
         </Toolbar>
       </AppBar>
     </div>
