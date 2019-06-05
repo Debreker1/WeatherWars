@@ -1,7 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
-import { createStyles, Theme } from '@material-ui/core/styles';
-import {makeStyles} from '@material-ui/styles';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import green from '@material-ui/core/colors/green';
 import Button from '@material-ui/core/Button';

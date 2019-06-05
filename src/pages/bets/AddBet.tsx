@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import WeatherBet from '../../contracts/BettingContract.json';
 import { Button, Icon } from '@material-ui/core';
 import Loadbutton from '../../components/LoadButton'
+import { Redirect } from 'react-router';
 
 enum status {
   Add = "Add",
@@ -14,7 +15,9 @@ enum status {
 type Props = stateProps;
 type State = {
   betAmount: string,
-  status: status
+  status: status,
+  redirect: boolean,
+  redirectLink: string
 };
 
 class AddBet extends React.Component<Props, State> {
@@ -23,7 +26,9 @@ class AddBet extends React.Component<Props, State> {
     super(props);
     this.state = {
       betAmount: "1",
-      status: status.Add
+      status: status.Add,
+      redirect: false,
+      redirectLink: ""
     }
   }
 
@@ -53,7 +58,7 @@ class AddBet extends React.Component<Props, State> {
         value: valueAmount,
         gas: 3000000
       });
-      this.setState({ status: status.Done });
+      this.setState({status: status.Done, redirect: true, redirectLink: "/bets/" + deployed.options.address});
     } catch (err) {
       this.setState({ status: status.Error });
       throw err;
@@ -63,6 +68,7 @@ class AddBet extends React.Component<Props, State> {
   public render() {
     return (
       <div>
+        {this.state.redirect && <Redirect to={this.state.redirectLink}/>}
         <p>Current status: {this.state.status}</p>
         <h1>Add bet</h1>
         <form className="createBet-login" onSubmit={this.deployContract}>

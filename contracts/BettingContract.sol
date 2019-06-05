@@ -27,9 +27,14 @@ contract BettingContract is usingOraclize
         betAmount = msg.value;
         initialBet = initial;
 
-        OAR = OraclizeAddrResolverI(0x1E478a55ea1cc0429Eff9699EAbE9fc0825508D9);
+        OAR = OraclizeAddrResolverI(0x6f485C8BF6fc43eA212E93BBF8ce046C7f1cb475);
         getWeather(startTime);
 
+    }
+
+    function readBetAmount() public view returns (uint)
+    {
+        return betAmount;
     }
 
     function AddPlayer(bool guessedHigher) public payable

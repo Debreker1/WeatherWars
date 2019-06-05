@@ -63,7 +63,7 @@ class Client extends React.Component<Props, State>
                         <Route exact={true} path="/bets/:slug" render={props =>{
                             return(
                                 <BaseComponent>
-                                    <BetDetails/>
+                                    <BetDetails {...props}/>
                                 </BaseComponent>
                             )
                         }}/>
