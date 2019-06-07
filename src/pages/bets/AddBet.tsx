@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { connect } from 'react-redux'
 import WeatherBet from '../../contracts/BettingContract.json';
-import { Button, Icon, FormControl, InputLabel, TextField } from '@material-ui/core';
+import { FormControl, InputLabel, TextField, Select, MenuItem } from '@material-ui/core';
 import { KeyboardDateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
-import Loadbutton from '../../components/LoadButton';
-import { Redirect } from 'react-router';
-import { format, differenceInSeconds } from 'date-fns';
+// import { Redirect } from 'react-router';
+import { differenceInSeconds } from 'date-fns';
+import GoogleMaps from '../../components/GoogleMaps';
 
 enum status {
   Add = "Add",
@@ -15,13 +15,21 @@ enum status {
   Error = "Error"
 }
 
+enum betVisability {
+  Public = "Public",
+  Private = "Private"
+}
+
 type Props = stateProps;
 type State = {
   betAmount: string,
   status: status,
   redirect: boolean,
-  redirectLink: string,
   date: Date | null
+  visability: betVisability,
+  lat: number,
+  lng: number,
+  fieldsDisabled: boolean
 };
 
 class AddBet extends React.Component<Props, State> {
@@ -32,9 +40,20 @@ class AddBet extends React.Component<Props, State> {
       betAmount: "1",
       status: status.Add,
       redirect: false,
-      redirectLink: "",
-      date: new Date()
+      date: new Date(),
+      visability: betVisability.Public,
+      lat: 0,
+      lng: 0,
+      fieldsDisabled: false
     }
+  }
+
+  setLocation = (lat: number, lng: number) => {
+    console.log("setting location in addBet");
+    this.setState({
+      lat: lat,
+      lng: lng
+    })
   }
 
   handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,8 +63,13 @@ class AddBet extends React.Component<Props, State> {
       ...this.state,
       [name]: value
     });
-    console.log(name + " : " + value);
   }
+
+  handleSelectChange = (event: React.ChangeEvent<{ name?: string; value: unknown }>) => {
+    const value: betVisability = event.target.value as betVisability;
+    this.setState({ visability: value });
+    console.log(value);
+  };
 
   handleDateChange = (date: Date | null) => {
     this.setState({ date: date });
@@ -55,8 +79,8 @@ class AddBet extends React.Component<Props, State> {
     e.preventDefault();
     if (this.state.date != null) {
       try {
-        this.setState({ status: status.Deploying });
-        const amountOfSeconds = differenceInSeconds(new Date(), this.state.date);
+        this.setState({ status: status.Deploying, fieldsDisabled: true });
+        const amountOfSeconds = differenceInSeconds(this.state.date, new Date());
         const account = this.props.accounts[0];
         const valueAmount = await this.props.web3.utils.toWei(this.state.betAmount, "ether")
         const weatherContract = await new this.props.web3.eth.Contract(WeatherBet.abi);
@@ -70,50 +94,64 @@ class AddBet extends React.Component<Props, State> {
           value: valueAmount,
           gas: 3000000
         });
-        this.setState({ status: status.Done, redirect: true, redirectLink: "/bets/" + deployed.options.address });
+        this.setState({ status: status.Done, redirect: true });
       } catch (err) {
-        this.setState({ status: status.Error });
+        this.setState({ status: status.Error, fieldsDisabled: false });
         throw err;
       }
     }
   };
 
   public render() {
-    return this.formLayout();
-  }
-
-  formLayout = () => {
     return (
-      <form>
-        <TextField
-          id="betAmount"
-          name="betAmount"
-          label="Bet Amount"
-          value={this.state.betAmount}
-          onChange={this.handleChange}
-          type="number"
-          InputLabelProps={{
-            shrink: true,
-          }}
-          margin="normal"
-        />
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <KeyboardDateTimePicker
-            margin="normal"
-            id="mui-pickers-date"
-            name="date"
-            label="Datum en tijd van weer"
-            disablePast={true}
-            value={this.state.date}
-            onChange={this.handleDateChange}
-            KeyboardButtonProps={{
-              'aria-label': 'change date',
+      <div>
+        <form onSubmit={this.deployContract}>
+          <TextField
+            id="betAmount"
+            name="betAmount"
+            label="Bet Amount"
+            value={this.state.betAmount}
+            onChange={this.handleChange}
+            type="number"
+            InputLabelProps={{
+              shrink: true,
             }}
+            margin="normal"
+            disabled={this.state.fieldsDisabled}
           />
-        </MuiPickersUtilsProvider>
-      </form>
-    );
-  };
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <KeyboardDateTimePicker
+              margin="normal"
+              id="weather-date-picker"
+              name="date"
+              label="Datum en tijd van weer"
+              disablePast={true}
+              value={this.state.date}
+              onChange={this.handleDateChange}
+              disabled={this.state.fieldsDisabled}
+              KeyboardButtonProps={{
+                'aria-label': 'Datum veranderen',
+              }}
+            />
+          </MuiPickersUtilsProvider>
+          <FormControl>
+            <InputLabel htmlFor="visability-select">Zichtbaarheid</InputLabel>
+            <Select
+              value={this.state.visability}
+              onChange={this.handleSelectChange}
+              disabled={this.state.fieldsDisabled}
+            >
+              <MenuItem value={betVisability.Public}>{betVisability.Public}</MenuItem>
+              <MenuItem value={betVisability.Private}>{betVisability.Private}</MenuItem>
+            </Select>
+          </FormControl>
+          <GoogleMaps passLocation={this.setLocation} />
+          <input type="submit" value="contract aanmaken" />
+        </form>
+        <p>Huidige status: {this.state.status}</p>
+      </div>
+    )
+  }
 }
 
 interface stateProps {
