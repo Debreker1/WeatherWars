@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Button } from '@material-ui/core/';
+import ResponsiveDrawer from '../../components/Header'
 
 
 class Home extends React.Component
@@ -8,11 +9,9 @@ class Home extends React.Component
     {
         return(
             <div>
+                <ResponsiveDrawer />
                 <div>
-                    <p>Home</p>
-                    <div>
-                        
-                    </div>
+                    <p1>Home</p1>
                 </div>
             </div>
         )
