@@ -3,6 +3,7 @@ import "./oraclizeAPI_0.5.sol";
 
 //Factory contract 1
 //Contracts get associated with owner address & owners can only have 1 contract
+/*
 contract Betlist
 {
     mapping(address => address) bets;
@@ -11,13 +12,13 @@ contract Betlist
     {
         if (bets[msg.sender] == 0)
         {
-            address newBet = new BettingContract(startTime, initial, location, msg.value, msg.sender);
+            BettingContract newBet = new BettingContract(startTime, initial, location, msg.value, msg.sender);
             bets[msg.sender] = newBet;
             newBet.transfer(msg.value);
         }
     }
 
-    function GetContract() public view returns (address[])
+    function GetContract() public view returns (address[] memory)
     {
         return bets;
     }
@@ -30,21 +31,21 @@ contract Betlist
         }
     }
 }
-
+*/
 //Factory contract 2
 //Simpel factory contract
 contract Betlist2
 {
-    address[] bets;
+    address[] public bets;
 
     function createBet(uint startTime, uint initial, string memory location) public payable
     {
-        address newBet = new BettingContract(startTime, initial, location, msg.value, msg.sender);
+        BettingContract newBet = new BettingContract(startTime, initial, location, msg.value, msg.sender);
         bets.push(newBet);
         newBet.transfer(msg.value);
     }
 
-    function GetContracts() public view returns (address[])
+    function GetContracts() public view returns (address[] memory)
     {
         return bets;
     }
@@ -71,7 +72,7 @@ contract BettingContract is usingOraclize
     Player[] winners;
 
     //When called for, Oraclize needs to be called and the Total needs to be updated.
-    function BetttingContract(uint startTime, uint initial, string memory location, uint betAmount_, address owner_) public payable
+    constructor(uint startTime, uint initial, string memory location, uint betAmount_, address owner_) public payable
     {
         owner = owner_;
         betAmount = betAmount_;
