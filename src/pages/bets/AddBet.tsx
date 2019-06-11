@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { connect } from 'react-redux'
 import WeatherBet from '../../contracts/BettingContract.json';
-import { FormControl, InputLabel, TextField, Select, MenuItem } from '@material-ui/core';
+import { FormControl, InputLabel, TextField, Select, MenuItem, Link } from '@material-ui/core';
 import { KeyboardDateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
-// import { Redirect } from 'react-router';
+import { Redirect } from 'react-router';
 import { differenceInSeconds } from 'date-fns';
 import GoogleMaps from '../../components/GoogleMaps';
 
@@ -29,7 +29,8 @@ type State = {
   visability: betVisability,
   lat: number,
   lng: number,
-  fieldsDisabled: boolean
+  fieldsDisabled: boolean,
+  newContractAddress: string
 };
 
 class AddBet extends React.Component<Props, State> {
@@ -44,7 +45,8 @@ class AddBet extends React.Component<Props, State> {
       visability: betVisability.Public,
       lat: 0,
       lng: 0,
-      fieldsDisabled: false
+      fieldsDisabled: false,
+      newContractAddress: ''
     }
   }
 
@@ -94,7 +96,8 @@ class AddBet extends React.Component<Props, State> {
           value: valueAmount,
           gas: 3000000
         });
-        this.setState({ status: status.Done, redirect: true });
+        this.setState({ status: status.Done, newContractAddress: deployed.options.address});
+        window.setTimeout(() => {this.setState({redirect: true})}, 3000);
       } catch (err) {
         this.setState({ status: status.Error, fieldsDisabled: false });
         throw err;
@@ -102,9 +105,15 @@ class AddBet extends React.Component<Props, State> {
     }
   };
 
+  handleRedirect = (contractAddress: string) : any => {
+    let link: string = "/bets/" + contractAddress;
+    return <Redirect to={link}/>
+  }
+
   public render() {
     return (
       <div>
+        {this.state.redirect && this.handleRedirect(this.state.newContractAddress)}
         <form onSubmit={this.deployContract}>
           <TextField
             id="betAmount"
@@ -149,6 +158,7 @@ class AddBet extends React.Component<Props, State> {
           <input type="submit" value="contract aanmaken" />
         </form>
         <p>Huidige status: {this.state.status}</p>
+        {this.state.newContractAddress && <p>Contract aangemaakt!: {this.state.newContractAddress}</p>}
       </div>
     )
   }
