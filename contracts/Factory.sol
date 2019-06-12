@@ -10,25 +10,21 @@ contract Betlist
 
     function createBet(uint startTime, uint initial, string memory location) public payable
     {
-        if (bets[msg.sender] == 0)
-        {
-            BettingContract newBet = new BettingContract(startTime, initial, location, msg.value, msg.sender);
-            bets[msg.sender] = newBet;
-            newBet.transfer(msg.value);
-        }
+        BettingContract newBet = new BettingContract(startTime, initial, location, msg.value, msg.sender);
+        address newBetAddr = address(newBet);
+        bets[msg.sender] = newBetAddr;
+        address payable sendAddr = address(uint160(newBetAddr));
+        sendAddr.transfer(msg.value);
     }
 
-    function GetContract() public view returns (address[] memory)
+    function GetContract() public view returns (mapping(address => address) storage)
     {
         return bets;
     }
 
     function GetOwnContract() public view returns (address)
     {
-        if (bets[msg.sender != 0])
-        {
-            return bets[msg.sender];
-        }
+        return bets[msg.sender];
     }
 }
 */
@@ -36,13 +32,17 @@ contract Betlist
 //Simpel factory contract
 contract Betlist2
 {
+    //BettingContract[] public bets;
     address[] public bets;
 
     function createBet(uint startTime, uint initial, string memory location) public payable
     {
         BettingContract newBet = new BettingContract(startTime, initial, location, msg.value, msg.sender);
-        bets.push(newBet);
-        newBet.transfer(msg.value);
+        address contractAddr = address(newBet);
+        bets.push(contractAddr);
+        address newBetAddr = address(newBet);
+        address payable sendAddr = address(uint160(newBetAddr));
+        sendAddr.transfer(msg.value);
     }
 
     function GetContracts() public view returns (address[] memory)
@@ -50,6 +50,7 @@ contract Betlist2
         return bets;
     }
 }
+
 
 //Contract for bets
 contract BettingContract is usingOraclize
@@ -74,7 +75,7 @@ contract BettingContract is usingOraclize
     //When called for, Oraclize needs to be called and the Total needs to be updated.
     constructor(uint startTime, uint initial, string memory location, uint betAmount_, address owner_) public payable
     {
-        owner = owner_;
+        owner = address(uint160(owner_));
         betAmount = betAmount_;
         initialBet = initial;
 
@@ -107,7 +108,6 @@ contract BettingContract is usingOraclize
     function updateTotalReceived(uint amount) internal {
         betAmount += amount;
     }
-
 
     //Function that contains the actions of Oraclize.
     function getWeather(uint _time, string memory searchstring) public
