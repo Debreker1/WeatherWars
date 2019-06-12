@@ -30,27 +30,26 @@ contract Betlist
 */
 //Factory contract 2
 //Simpel factory contract
-contract Betlist2
+contract Betlist
 {
-    //BettingContract[] public bets;
     address[] public bets;
 
+    //Creates a new contract
     function createBet(uint startTime, uint initial, string memory location) public payable
     {
         BettingContract newBet = new BettingContract(startTime, initial, location, msg.value, msg.sender);
         address contractAddr = address(newBet);
         bets.push(contractAddr);
-        address newBetAddr = address(newBet);
-        address payable sendAddr = address(uint160(newBetAddr));
+        address payable sendAddr = address(uint160(contractAddr));
         sendAddr.transfer(msg.value);
     }
 
+    //Returns all the contract
     function GetContracts() public view returns (address[] memory)
     {
         return bets;
     }
 }
-
 
 //Contract for bets
 contract BettingContract is usingOraclize
@@ -81,16 +80,16 @@ contract BettingContract is usingOraclize
 
         OAR = OraclizeAddrResolverI(0x6f485C8BF6fc43eA212E93BBF8ce046C7f1cb475);
         getWeather(startTime, location);
-
     }
 
+    //Function when a new player is added
     function AddPlayer(bool guessedHigher) public payable
     {
+        //If the player doesn't have enough ETH
         if (msg.value != betAmount){
             msg.sender.transfer(msg.value);
         }
         else{
-
             //Since the owner is also counted, this playerCount starts at 1!
             playerCount = playerCount + 1;
 
@@ -105,6 +104,7 @@ contract BettingContract is usingOraclize
         }
     }
 
+    //Updates the total amount
     function updateTotalReceived(uint amount) internal {
         betAmount += amount;
     }
@@ -116,25 +116,20 @@ contract BettingContract is usingOraclize
         oraclize_query(_time, "WolframAlpha",  searchstring);
     }
 
-
     //This function will do everything needed to give the winnings to the winner of the bet.
     function _callback(string memory _result) public
     {
-        //totalReceived should get sent to the winner(s).
-        //Thus, the winner(s) need(s) to be chosen.
-
-        //This results in a loop if the owner did not win.
-
-        if(msg.sender != oraclize_cbAddress()) revert();
+        //if(msg.sender != oraclize_cbAddress()) revert();
         emit NewTemperature(_result);
         temperature = parseInt(_result);
 
+        //Winner gets chosen
         if (initialBet == temperature){
-            //Send everything in the contract back to the owner, since he won!
+            //The owner wins
             owner.transfer(address(this).balance);
         }
         else{
-            //
+            //Team higher wins
             if (initialBet > temperature) {
                 for (uint i = 0; i < players.length; i++) {
                     if (players[i].higher == true){
@@ -142,6 +137,7 @@ contract BettingContract is usingOraclize
                     }
                 }
             }
+            //Team Lower wins
             else{
                 for (uint i = 0; i < players.length; i++) {
                     if (players[i].higher == false){
@@ -149,7 +145,7 @@ contract BettingContract is usingOraclize
                     }
                 }
             }
-
+            //Winners recieve their ETH
             for (uint i = 0; i < winners.length; i++){
                 winners[i].addr.transfer(betAmount / winners.length);
             }
