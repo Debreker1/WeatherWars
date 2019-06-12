@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { connect } from 'react-redux'
 import WeatherBet from '../../contracts/BettingContract.json';
-import { FormControl, InputLabel, TextField, Select, MenuItem, Link } from '@material-ui/core';
+import { FormControl, InputLabel, TextField, Select, MenuItem } from '@material-ui/core';
 import { KeyboardDateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { Redirect } from 'react-router';
 import { differenceInSeconds } from 'date-fns';
 import GoogleMaps from '../../components/GoogleMaps';
+import getWeb3 from '../../web3/getWeb3.js';
 
 enum status {
   Add = "Add",
@@ -20,8 +20,10 @@ enum betVisability {
   Private = "Private"
 }
 
-type Props = stateProps;
+type Props = {};
 type State = {
+  web3: any,
+  accounts: string[],
   betAmount: string,
   status: status,
   redirect: boolean,
@@ -38,6 +40,8 @@ class AddBet extends React.Component<Props, State> {
   constructor(props) {
     super(props);
     this.state = {
+      web3: null,
+      accounts: [],
       betAmount: "1",
       status: status.Add,
       redirect: false,
@@ -50,8 +54,18 @@ class AddBet extends React.Component<Props, State> {
     }
   }
 
+  async componentWillMount() {
+    const web3 = await getWeb3();
+    web3.eth.transactionConfirmationBlocks = 1;
+    const accounts = await web3.eth.getAccounts();
+    this.setState({
+      ...this.state,
+      web3: web3,
+      accounts: accounts
+    });
+  }
+
   setLocation = (lat: number, lng: number) => {
-    console.log("setting location in addBet");
     this.setState({
       lat: lat,
       lng: lng
@@ -83,9 +97,9 @@ class AddBet extends React.Component<Props, State> {
       try {
         this.setState({ status: status.Deploying, fieldsDisabled: true });
         const amountOfSeconds = differenceInSeconds(this.state.date, new Date());
-        const account = this.props.accounts[0];
-        const valueAmount = await this.props.web3.utils.toWei(this.state.betAmount, "ether")
-        const weatherContract = await new this.props.web3.eth.Contract(WeatherBet.abi);
+        const account = this.state.accounts[0];
+        const valueAmount = await this.state.web3.utils.toWei(this.state.betAmount, "ether")
+        const weatherContract = await new this.state.web3.eth.Contract(WeatherBet.abi);
         const betDeploy = await weatherContract.deploy({
           data: WeatherBet.bytecode,
           arguments: [amountOfSeconds, valueAmount]
@@ -164,14 +178,4 @@ class AddBet extends React.Component<Props, State> {
   }
 }
 
-interface stateProps {
-  web3: any
-  accounts: string[]
-};
-
-const mapStateToProps = (state: any) => ({
-  web3: state.web3Reducer.Web3,
-  accounts: state.web3Reducer.Accounts
-});
-
-export default connect(mapStateToProps)(AddBet);
+export default AddBet;
