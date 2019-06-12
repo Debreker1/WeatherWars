@@ -20,6 +20,7 @@
     "react-router-dom": "^5.0.0",
     "react-scripts": "3.0.0",
     "react-thunk": "^1.0.0",
+    "react-web3-provider": "^1.1.2",
     "truffle": "^5.0.15",
     "truffle-contract": "^4.0.14",
     "typescript": "3.4.5",
