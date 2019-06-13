@@ -5,10 +5,10 @@ contract BettingContract is usingOraclize
 {
 
     address payable owner;
-    uint playerCount = 0;
-    uint betAmount;
-    uint initialBet;
-
+    uint public playerCount = 0;
+    uint public betAmount;
+    uint public initialBet;
+    uint i;
 
     uint public temperature;
     event NewOraclizeQuery(string description);
@@ -23,14 +23,14 @@ contract BettingContract is usingOraclize
     Player[] winners;
 
     //When called for, Oraclize needs to be called and the Total needs to be updated.
-    constructor(uint startTime, uint initial) public payable
+    constructor(uint startTime, uint initial, string memory location) public payable
     {
         owner = msg.sender;
         betAmount = msg.value;
         initialBet = initial;
 
         OAR = OraclizeAddrResolverI(0x6f485C8BF6fc43eA212E93BBF8ce046C7f1cb475);
-        getWeather(startTime);
+        getWeather(startTime, location);
 
     }
 
@@ -47,7 +47,7 @@ contract BettingContract is usingOraclize
             //Add player to a struct, and add it to the array.
             Player memory player;
             player.addr = msg.sender;
-            player.higher = guessedHigher; //TODO! Add all Trues to a separate array, and all False to a separate array.
+            player.higher = guessedHigher;
             players.push(player);
 
             //Update the Total for each player added.
@@ -61,10 +61,10 @@ contract BettingContract is usingOraclize
 
 
     //Function that contains the actions of Oraclize.
-    function getWeather(uint _time) public
+    function getWeather(uint _time, string memory searchstring) public
     {
         emit NewOraclizeQuery("Query was sent waiting for response....");
-        oraclize_query(_time, "WolframAlpha",  "Temperature in Rotterdam");
+        oraclize_query(_time, "WolframAlpha", searchstring);
     }
 
 
@@ -76,7 +76,7 @@ contract BettingContract is usingOraclize
 
         //This results in a loop if the owner did not win.
 
-        //if(msg.sender != oraclize_cbAddress()) revert();
+        if(msg.sender != oraclize_cbAddress()) revert();
         emit NewTemperature(_result);
         temperature = parseInt(_result);
 
@@ -87,36 +87,23 @@ contract BettingContract is usingOraclize
         else{
             //
             if (initialBet > temperature) {
-                for (uint i = 0; i < players.length; i++) {
+                for (i = 0; i < players.length; i++) {
                     if (players[i].higher == true){
                         winners.push(players[i]);
                     }
                 }
             }
             else{
-                for (uint i = 0; i < players.length; i++) {
+                for (i = 0; i < players.length; i++) {
                     if (players[i].higher == false){
                         winners.push(players[i]);
                     }
                 }
             }
 
-            for (uint i = 0; i < winners.length; i++){
+            for (i = 0; i < winners.length; i++){
                 winners[i].addr.transfer(betAmount / winners.length);
             }
-                /*
-                for each player in higher {
-                    msg.sender.transfer(this.balance / higher.Length)
-                }
-            else
-                {
-                for each player in lower {
-                msg.sender.transfer(this.balance / higher.Length)
-                }
-            }
-
-
-            */
         }
     }
 }
