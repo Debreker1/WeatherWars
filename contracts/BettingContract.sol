@@ -46,14 +46,7 @@ contract BettingContract is usingOraclize
             player.addr = msg.sender;
             player.higher = guessedHigher;
             players.push(player);
-
-            //Update the Total for each player added.
-            updateTotalReceived(msg.value);
         }
-    }
-
-    function updateTotalReceived(uint amount) internal {
-        betAmount += amount;
     }
 
     //Function that contains the actions of Oraclize.
@@ -94,7 +87,7 @@ contract BettingContract is usingOraclize
             }
 
             for (uint i = 0; i < winners.length; i++){
-                winners[i].addr.transfer(betAmount / winners.length);
+                winners[i].addr.transfer(address(this).balance / winners.length);
             }
         }
     }
