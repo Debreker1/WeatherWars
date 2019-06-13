@@ -33,26 +33,33 @@ class BetDetails extends React.Component<Props, State> {
     web3.eth.transactionConfirmationBlocks = 1;
     const accounts: string[] = await web3.eth.getAccounts();
     const weatherContract = await new web3.eth.Contract(WeatherBet.abi, this.props.match.params.slug);
-    const totalBetweiRaw = await weatherContract.methods.betAmount().call();
-    const totalBetAmount = web3.utils.fromWei(totalBetweiRaw.toString());
-    const playersRaw = await weatherContract.methods.playerCount().call();
-    const totalPlayers = playersRaw.toNumber();
+
+    const betAmountRaw = await weatherContract.methods.betAmount().call();
+    const betAmount: number = parseInt(web3.utils.fromWei(betAmountRaw.toString()));
+
+    const playerAmountRaw = await weatherContract.methods.playerCount().call();
+    const players: number = playerAmountRaw.toNumber();
+    console.log(playerAmountRaw.toHexString());
+
+    const totalBetAmount: number = (betAmount * players);
 
     this.setState({
       contract: weatherContract,
       web3: web3,
       accounts: accounts,
-      totalBetAmount: totalBetAmount,
-      players: totalPlayers
+      players: players,
+      betAmount: betAmount,
+      totalBetAmount: totalBetAmount
     });
   };
 
   public render() {
     return (
       <div>
-        <p>Dit is de pagina voor een specifieke bet. Slug is: {this.props.match.params.slug}</p>
+        <p>Dit is de pagina voor een specifieke bet. address is: {this.props.match.params.slug}</p>
         <p>Totaal in de pot: {this.state.totalBetAmount}</p>
         <p>Totaal aantal spelers: {this.state.players}</p>
+        <p>Inleg om te mogen meespelen: {this.state.betAmount}</p>
       </div>
     )
   }
