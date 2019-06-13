@@ -1,12 +1,13 @@
 import * as React from 'react';
 import WeatherBet from '../../contracts/BettingContract.json';
+import Betlist from '../../contracts/Betlist.json';
 import { FormControl, InputLabel, TextField, Select, MenuItem } from '@material-ui/core';
 import { KeyboardDateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { Redirect } from 'react-router';
 import { differenceInSeconds, isAfter, getUnixTime } from 'date-fns';
 import getWeb3 from '../../web3/getWeb3.js';
-import {status} from '../../model';
+import { status } from '../../model';
 
 
 
@@ -39,7 +40,8 @@ type State = {
   fieldsDisabled: boolean,
   newContractAddress: string,
   city: City,
-  degrees: number
+  degrees: number,
+  betList: any
 };
 
 const visabilityOptions = Object.values(betVisability).map(k => {
@@ -73,7 +75,8 @@ class AddBet extends React.Component<Props, State> {
       fieldsDisabled: false,
       newContractAddress: '',
       city: City.Rotterdam,
-      degrees: 15
+      degrees: 15,
+      betList: null
     }
   }
 
@@ -81,11 +84,20 @@ class AddBet extends React.Component<Props, State> {
     const web3 = await getWeb3();
     web3.eth.transactionConfirmationBlocks = 1;
     const accounts = await web3.eth.getAccounts();
+    const networkId = await web3.eth.net.getId();
+    const deployedNetwork = Betlist.networks[networkId];
+    const betList = await new web3.eth.Contract(
+      Betlist.abi,
+      deployedNetwork && deployedNetwork.address,
+    );
     this.setState({
       ...this.state,
       web3: web3,
-      accounts: accounts
+      accounts: accounts,
+      betList: betList
     });
+
+    console.log(await betList.methods.GetContracts().call());
   }
 
   handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -123,18 +135,31 @@ class AddBet extends React.Component<Props, State> {
         const weatherContract = await new this.state.web3.eth.Contract(WeatherBet.abi);
         const degrees = this.state.degrees;
         const location = this.state.city;
-        const betDeploy = await weatherContract.deploy({
-          data: WeatherBet.bytecode,
-          arguments: [amountOfSeconds, getUnixTime(this.state.date), degrees, location, valueAmount, account]
-        });
-        // const gasAmount = await betDeploy.estimateGas({from: this.state.accounts[0], value: valueAmount});
-        const deployed = await betDeploy.send({
-          from: account,
-          value: valueAmount,
-          gas: 3000000
-        });
-        this.setState({ status: status.Done, newContractAddress: deployed.options.address });
-        window.setTimeout(() => { this.setState({ redirect: true }) }, 3000);
+
+        console.log(
+          amountOfSeconds,
+          getUnixTime(this.state.date),
+          degrees,
+          location);
+
+        // const betDeploy = await this.state.betList.methods.createBet(
+        //   amountOfSeconds,
+        //   getUnixTime(this.state.date),
+        //   degrees,
+        //   location
+        // ).send({
+        //   from: account,
+        //   value: valueAmount,
+        //   gas: 3000000
+        // });
+
+        // console.log(betDeploy);
+        
+        
+        
+        
+        // this.setState({ status: status.Done, newContractAddress: deployed.options.address });
+        // window.setTimeout(() => { this.setState({ redirect: true }) }, 3000);
       } catch (err) {
         this.setState({ status: status.Error, fieldsDisabled: false });
         throw err;
