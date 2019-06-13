@@ -5,11 +5,12 @@ contract BettingContract is usingOraclize
 {
 
     address payable owner;
-    uint public playerCount = 1;
+    int public playerCount = 1;
     uint public betAmount;
     uint public initialBet; //Temperature set by the owner
-
+    string public location;
     uint public temperature;
+    uint public timestamp;
     event NewOraclizeQuery(string description);
     event NewTemperature(string temperature);
 
@@ -22,19 +23,15 @@ contract BettingContract is usingOraclize
     Player[] winners;
 
     //When called for, Oraclize needs to be called and the Total needs to be updated.
-    constructor(uint startTime, uint initial, string memory location, uint betAmount_, address owner_) public payable
+    constructor(uint startTime, uint timestamp_, uint initial, string memory location_, uint betAmount_, address owner_) public payable
     {
         owner = address(uint160(owner_));
         betAmount = betAmount_;
         initialBet = initial;
-
+        location = location_;
+        timestamp = timestamp_;
         OAR = OraclizeAddrResolverI(0x6f485C8BF6fc43eA212E93BBF8ce046C7f1cb475);
         getWeather(startTime, location);
-    }
-
-    function readBetAmount() public view returns (uint)
-    {
-        return betAmount;
     }
 
     function AddPlayer(bool guessedHigher) public payable

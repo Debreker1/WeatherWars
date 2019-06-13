@@ -4,15 +4,11 @@ import { FormControl, InputLabel, TextField, Select, MenuItem } from '@material-
 import { KeyboardDateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { Redirect } from 'react-router';
-import { differenceInSeconds, isAfter } from 'date-fns';
+import { differenceInSeconds, isAfter, getUnixTime } from 'date-fns';
 import getWeb3 from '../../web3/getWeb3.js';
+import {status} from '../../model';
 
-enum status {
-  Add = "Add",
-  Deploying = "Deploying",
-  Done = "Done",
-  Error = "Error"
-}
+
 
 enum betVisability {
   Public = "Public",
@@ -42,7 +38,8 @@ type State = {
   visability: betVisability,
   fieldsDisabled: boolean,
   newContractAddress: string,
-  city: City
+  city: City,
+  degrees: number
 };
 
 const visabilityOptions = Object.values(betVisability).map(k => {
@@ -75,7 +72,8 @@ class AddBet extends React.Component<Props, State> {
       visability: betVisability.Public,
       fieldsDisabled: false,
       newContractAddress: '',
-      city: City.Rotterdam
+      city: City.Rotterdam,
+      degrees: 15
     }
   }
 
@@ -123,9 +121,11 @@ class AddBet extends React.Component<Props, State> {
         const account = this.state.accounts[0];
         const valueAmount = await this.state.web3.utils.toWei(this.state.betAmount, "ether");
         const weatherContract = await new this.state.web3.eth.Contract(WeatherBet.abi);
+        const degrees = this.state.degrees;
+        const location = this.state.city;
         const betDeploy = await weatherContract.deploy({
           data: WeatherBet.bytecode,
-          arguments: [amountOfSeconds, valueAmount]
+          arguments: [amountOfSeconds, getUnixTime(this.state.date), degrees, location, valueAmount, account]
         });
         // const gasAmount = await betDeploy.estimateGas({from: this.state.accounts[0], value: valueAmount});
         const deployed = await betDeploy.send({
@@ -157,6 +157,19 @@ class AddBet extends React.Component<Props, State> {
             name="betAmount"
             label="Bet Amount"
             value={this.state.betAmount}
+            onChange={this.handleChange}
+            type="number"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            margin="normal"
+            disabled={this.state.fieldsDisabled}
+          />
+          <TextField
+            id="degrees"
+            name="degrees"
+            label="Graden"
+            value={this.state.degrees}
             onChange={this.handleChange}
             type="number"
             InputLabelProps={{
