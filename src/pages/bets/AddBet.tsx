@@ -116,7 +116,7 @@ class AddBet extends React.Component<Props, State> {
 
   deployContract = async (e) => {
     e.preventDefault();
-    if (this.state.date != null && isAfter(new Date, this.state.date)) {
+    if (this.state.date != null && isAfter(this.state.date!, new Date())) {
       try {
         this.setState({ status: status.Deploying, fieldsDisabled: true });
         const amountOfSeconds = differenceInSeconds(this.state.date, new Date());
