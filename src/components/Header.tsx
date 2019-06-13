@@ -39,7 +39,7 @@ function ButtonAppBar(props: Props) {
           </Typography>
           <Button color="inherit" component={Link} to="/">Home</Button>
           <Button color="inherit" component={Link} to="/bets/add">Create bet</Button>
-          {/* <Button color="inherit" component={Link} to="/bets">Active bets</Button> */}
+          <Button color="inherit" component={Link} to="/bets">Active bets</Button>
         </Toolbar>
       </AppBar>
     </div>
