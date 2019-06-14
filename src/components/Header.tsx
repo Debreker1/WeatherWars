@@ -17,6 +17,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import {Link} from 'react-router-dom';
 
 const drawerWidth = 240;
 
@@ -67,12 +68,30 @@ export default function ResponsiveDrawer(props) {
       <div className={classes.toolbar} />
       <Divider />
       <List>
-        {['Home', 'Create Bet', 'All Bets', 'My Bets'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>{<CloudIcon />}</ListItemIcon>
-            <ListItemText primary={text} />
+        <Link to="/" style={{ textDecoration: 'none', color: "inherit" }}>
+          <ListItem button key={'Home'}>
+            <ListItemIcon><CloudIcon /></ListItemIcon>
+            <ListItemText primary={'Home'} />
           </ListItem>
-        ))}
+        </Link>
+        <Link to="/bets/add" style={{ textDecoration: 'none', color: "inherit" }}>
+          <ListItem button key={'Create Bet'}>
+            <ListItemIcon><CloudIcon /></ListItemIcon>
+            <ListItemText primary={'Create Bet'} />
+          </ListItem>
+        </Link>
+        <Link to="/bets" style={{ textDecoration: 'none', color: "inherit" }}>
+          <ListItem button key={'All Bets'}>
+            <ListItemIcon><CloudIcon /></ListItemIcon>
+            <ListItemText primary={'All Bets'} />
+          </ListItem>
+        </Link>
+        <Link to="bets/my" style={{ textDecoration: 'none', color: "inherit" }}>
+          <ListItem button key={'My Bets'}>
+            <ListItemIcon><CloudIcon /></ListItemIcon>
+            <ListItemText primary={'My Bets'} />
+          </ListItem>
+        </Link>
       </List>
       <Divider />
     </div>
@@ -128,6 +147,9 @@ export default function ResponsiveDrawer(props) {
           </Drawer>
         </Hidden>
       </nav>
+      <main className={classes.content}>
+        {props.children}
+      </main>
     </div>
   );
 }

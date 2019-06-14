@@ -7,12 +7,11 @@ type State = {}
 class BaseComponent extends React.Component<Props, State>{
     render(){
         return(
-            <>
-            <Header/>
-            <main className="content max-width">
-                {this.props.children}
+            <Header>
+                <main className="content max-width">
+                    {this.props.children}
                 </main>
-                </>
+            </Header>
         )
     }
 }
