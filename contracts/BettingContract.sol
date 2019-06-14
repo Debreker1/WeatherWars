@@ -19,8 +19,8 @@ contract BettingContract is usingOraclize
         bool higher; //Whether their guess was higher than the owner's guess. True = higher, False = lower.
     }
 
-    Player[] public players;
-    Player[] public winners;
+    Player[] players;
+    Player[] winners;
 
     //When called for, Oraclize needs to be called and the Total needs to be updated.
     constructor(uint startTime, uint timestamp_, uint initial, string memory location_, uint betAmount_, address owner_) public payable
