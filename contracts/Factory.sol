@@ -1,5 +1,4 @@
 pragma solidity ^0.5.0;
-import "./oraclizeAPI_0.5.sol";
 import "./BettingContract.sol";
 
 contract Betlist
@@ -7,13 +6,12 @@ contract Betlist
     address[] public bets;
 
     //Creates a new contract
-    function createBet(uint startTime, uint timestamp, uint initial, string memory location) public payable
+    function createBet(uint startTime, uint timestamp, uint initial, string memory location) public payable returns (address)
     {
-        BettingContract newBet = new BettingContract(startTime, timestamp, initial, location, msg.value, msg.sender);
+        BettingContract newBet = (new BettingContract).value(msg.value)(startTime, timestamp, initial, location, msg.value, msg.sender);
         address contractAddr = address(newBet);
         bets.push(contractAddr);
-        address payable sendAddr = address(uint160(contractAddr));
-        sendAddr.transfer(msg.value);
+        return contractAddr;
     }
 
     //Returns all the contract

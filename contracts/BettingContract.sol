@@ -30,14 +30,15 @@ contract BettingContract is usingOraclize
         initialBet = initial;
         location = location_;
         timestamp = timestamp_;
-        OAR = OraclizeAddrResolverI(0x6f485C8BF6fc43eA212E93BBF8ce046C7f1cb475);
-        getWeather(startTime, location);
+        OAR = OraclizeAddrResolverI(0xAFf0d0eda5A90AaA5A58aAcb2b05e3E25EEd7Db9);
+        emit NewOraclizeQuery("Query was sent waiting for response....");
+        oraclize_query(startTime, "WolframAlpha", location);
     }
 
     function AddPlayer(bool guessedHigher) public payable
     {
         if (msg.value != betAmount){
-            msg.sender.transfer(msg.value);
+            revert("Amount sent not the same as the required bet amount");
         }
         else{
             //Since the owner is also counted, this playerCount starts at 1!
@@ -49,13 +50,6 @@ contract BettingContract is usingOraclize
             player.higher = guessedHigher;
             players.push(player);
         }
-    }
-
-    //Function that contains the actions of Oraclize.
-    function getWeather(uint _time, string memory searchstring) public
-    {
-        emit NewOraclizeQuery("Query was sent waiting for response....");
-        oraclize_query(_time, "WolframAlpha", searchstring);
     }
 
 
