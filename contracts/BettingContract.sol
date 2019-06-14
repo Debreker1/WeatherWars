@@ -19,8 +19,8 @@ contract BettingContract is usingOraclize
         bool higher; //Whether their guess was higher than the owner's guess. True = higher, False = lower.
     }
 
-    Player[] players;
-    Player[] winners;
+    Player[] public players;
+    Player[] public winners;
 
     //When called for, Oraclize needs to be called and the Total needs to be updated.
     constructor(uint startTime, uint timestamp_, uint initial, string memory location_, uint betAmount_, address owner_) public payable
@@ -68,7 +68,7 @@ contract BettingContract is usingOraclize
             owner.transfer(address(this).balance);
         }
         else{
-            if (initialBet > weatherResult) {
+            if (initialBet < weatherResult) {
                 //Team higher wins
                 for (uint i = 0; i < players.length; i++) {
                     if (players[i].higher == true){
