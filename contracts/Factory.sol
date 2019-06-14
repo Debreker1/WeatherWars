@@ -6,11 +6,12 @@ contract Betlist
     address[] public bets;
 
     //Creates a new contract
-    function createBet(uint startTime, uint timestamp, uint initial, string memory location) public payable
+    function createBet(uint startTime, uint timestamp, uint initial, string memory location) public payable returns (address)
     {
         BettingContract newBet = (new BettingContract).value(msg.value)(startTime, timestamp, initial, location, msg.value, msg.sender);
         address contractAddr = address(newBet);
         bets.push(contractAddr);
+        return contractAddr;
     }
 
     //Returns all the contract

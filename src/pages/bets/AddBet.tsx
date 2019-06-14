@@ -1,5 +1,4 @@
 import * as React from 'react';
-import WeatherBet from '../../contracts/BettingContract.json';
 import Betlist from '../../contracts/Betlist.json';
 import { FormControl, InputLabel, TextField, Select, MenuItem } from '@material-ui/core';
 import { KeyboardDateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
@@ -55,10 +54,6 @@ const CityOptions = Object.values(City).map(k => {
     <MenuItem value={k}>{k.toString()}</MenuItem>
   );
 });
-
-
-// console.log(CityKeys);
-
 
 class AddBet extends React.Component<Props, State> {
 
@@ -132,34 +127,26 @@ class AddBet extends React.Component<Props, State> {
         const amountOfSeconds = differenceInSeconds(this.state.date, new Date());
         const account = this.state.accounts[0];
         const valueAmount = await this.state.web3.utils.toWei(this.state.betAmount, "ether");
-        const weatherContract = await new this.state.web3.eth.Contract(WeatherBet.abi);
         const degrees = this.state.degrees;
         const location = this.state.city;
 
-        console.log(
+        const betDeploy = await this.state.betList.methods.createBet(
           amountOfSeconds,
           getUnixTime(this.state.date),
           degrees,
-          location);
+          "temparature in " + location
+        );
 
-        // const betDeploy = await this.state.betList.methods.createBet(
-        //   amountOfSeconds,
-        //   getUnixTime(this.state.date),
-        //   degrees,
-        //   location
-        // ).send({
-        //   from: account,
-        //   value: valueAmount,
-        //   gas: 3000000
-        // });
+        const betAddress = await betDeploy.call();
 
-        // console.log(betDeploy);
+        await betDeploy.send({
+          from: account,
+          value: valueAmount,
+          gas: 3000000
+        });
         
-        
-        
-        
-        // this.setState({ status: status.Done, newContractAddress: deployed.options.address });
-        // window.setTimeout(() => { this.setState({ redirect: true }) }, 3000);
+        this.setState({ status: status.Done, newContractAddress: betAddress });
+        window.setTimeout(() => { this.setState({ redirect: true }) }, 3000);
       } catch (err) {
         this.setState({ status: status.Error, fieldsDisabled: false });
         throw err;

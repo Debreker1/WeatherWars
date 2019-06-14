@@ -30,7 +30,7 @@ contract BettingContract is usingOraclize
         initialBet = initial;
         location = location_;
         timestamp = timestamp_;
-        
+        OAR = OraclizeAddrResolverI(0xAFf0d0eda5A90AaA5A58aAcb2b05e3E25EEd7Db9);
         emit NewOraclizeQuery("Query was sent waiting for response....");
         oraclize_query(startTime, "WolframAlpha", location);
     }
