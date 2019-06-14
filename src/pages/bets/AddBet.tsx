@@ -134,7 +134,7 @@ class AddBet extends React.Component<Props, State> {
           amountOfSeconds,
           getUnixTime(this.state.date),
           degrees,
-          "temparature in " + location
+          location
         );
 
         const betAddress = await betDeploy.call();

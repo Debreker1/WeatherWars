@@ -1,5 +1,5 @@
 pragma solidity ^0.5.0;
-import "./oraclizeAPI_0.5.sol";
+import './oraclizeAPI_0.5.sol';
 
 contract BettingContract is usingOraclize
 {
@@ -9,8 +9,8 @@ contract BettingContract is usingOraclize
     uint public betAmount;
     uint public initialBet; //Temperature set by the owner
     string public location;
-    uint public temperature;
     uint public timestamp;
+    uint public weatherResult;
     event NewOraclizeQuery(string description);
     event NewTemperature(string temperature);
 
@@ -30,9 +30,9 @@ contract BettingContract is usingOraclize
         initialBet = initial;
         location = location_;
         timestamp = timestamp_;
-        OAR = OraclizeAddrResolverI(0xAFf0d0eda5A90AaA5A58aAcb2b05e3E25EEd7Db9);
+        OAR = OraclizeAddrResolverI(0x6f485C8BF6fc43eA212E93BBF8ce046C7f1cb475);
         emit NewOraclizeQuery("Query was sent waiting for response....");
-        oraclize_query(startTime, "WolframAlpha", location);
+        oraclize_query(startTime, "WolframAlpha", strConcat("Temperature in ", location));
     }
 
     function AddPlayer(bool guessedHigher) public payable
@@ -54,18 +54,21 @@ contract BettingContract is usingOraclize
 
 
     //This function will do everything needed to give the winnings to the winner of the bet.
-    function _callback(string memory _result) public
+    function __callback(bytes32 _myid, string memory _result) public
     {
         //if(msg.sender != oraclize_cbAddress()) revert();
         emit NewTemperature(_result);
-        temperature = parseInt(_result);
+        weatherResult = parseInt(_result);
+        getWinners();
+    }
 
-        if (initialBet == temperature){
+    function getWinners() internal {
+        if (initialBet == weatherResult){
             //Send everything in the contract back to the owner, since he won!
             owner.transfer(address(this).balance);
         }
         else{
-            if (initialBet > temperature) {
+            if (initialBet > weatherResult) {
                 //Team higher wins
                 for (uint i = 0; i < players.length; i++) {
                     if (players[i].higher == true){
