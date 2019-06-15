@@ -1,86 +1,55 @@
 import * as React from 'react';
 import { Button } from '@material-ui/core/';
-import ResponsiveDrawer from '../../components/Header'
-import getWeb3 from '../../web3/getWeb3';
-import WeatherContract from "../../contracts/WeatherContract.json";
+import {Link} from 'react-router-dom';
 
-import { connect } from 'react-redux';
 
-import {setBet} from '../../_actions/bet.actions';
-import {setWeb3} from '../../_actions/web3.actions';
-
-type Props = DispatchProps
-type State = {
-    web3: any,
-    accounts: any,
-    networkId: number
-};
+type Props = {};
+type State = {};
 
 class Home extends React.Component<Props, State>
 {
 
-    public async componentDidMount()
-    {
-        console.log("I'm fired");
-        
-        try
-        {
-            console.log("try start");
-           const web3 = await getWeb3();
-           console.log("Got web3");
-           web3.eth.transactionConfirmationBlocks = 1;
-           console.log("setbet");
-           this.props.setBet("bet");
-           const accounts = await web3.eth.getAccounts();
-           const networkId = await web3.eth.net.getId();
-           this.state = {
-            web3: web3,
-            accounts: accounts,
-            networkId: networkId
-            } 
-        }
-        catch(error)
-        {
-            console.error(error);
-        }
-    }
-    
-    deployContract = async () => {
-        const account = this.state.accounts[0]
-        const nonce = await this.state.web3.eth.getTransactionCount(account);
-        const weathercontract = await new this.state.web3.eth.Contract(WeatherContract.abi);
-        const createdContract = weathercontract.deploy({
-            data: WeatherContract.bytecode
-        }).send({from: account})
-        .then((contract) => {
-            console.log("pay up!");
-            contract.methods.update().send({from: account})
-        });
-        
-        // createdContract.methods.update().call();
-    }
-
     public render()
     {
         return(
-            <div>
-                <ResponsiveDrawer />
-                <p>Dit is de homepage</p>
-                <Button onClick={this.deployContract} variant="contained" color="primary">Hello world</Button>
+            <div id="home" style={{marginTop: "100px"}}>
+                <div id="header" className="container-fluid text-center">
+                    <div className="row">
+                        <div className="col-sm-12">
+                            <h1 style={{margin: "40px 0", fontWeight: "lighter",color: "rgba(71, 73, 88, 0.93)", textAlign: "center"}}>Home</h1>
+                            <hr style={{border: "0px",
+                                height: "1px",
+                                width: "300px",
+                                backgroundColor: "rgba(71, 73, 88, 0.93)"}} />
+                        </div>
+                    </div>
+                </div>
+                <div id="info" className="container-fluid text-center">
+                    <div className="row">
+                        <div className="col-md-12">
+                            <h3 style={{textAlign: "center", margin: "40px"}}>What is Weather Wars?</h3>
+                            {/* TODO: align image to center */}
+                            <img src="https://i1.wp.com/metro.co.uk/wp-content/uploads/2018/02/ios_weather_icons-e1519660727179.png?quality=90&strip=all&zoom=1&resize=644%2C483&ssl=1" style={{height: 322, width: 421}}></img>
+                            <p style={{textAlign: "center", marginLeft: "400px", marginRight: "400px", marginBottom: "40px"}}>Weather Wars is a web-application which allows users to bet on the weather. Users bet Ether and try to predict the weather in a certain place, at a certain time. Players are able to create and join both private and public bets. Furthermore, Weather Wars has functionality for group bets.</p>
+                            <p style={{textAlign: "center", marginLeft: "400px", marginRight: "400px", marginBottom: "40px"}}>Because Weather Wars is on a blockchain, any Ethereum transactions will be transferred safely and nearly instantaneously.</p>
+                            
+                            <hr style={{border: "0px",
+                                height: "1px",
+                                width: "300px",
+                                backgroundColor: "rgba(71, 73, 88, 0.93)"}} />
+                        </div>
+                    </div>
+                </div>
+                {/* TODO: align buttons to center */}
+                <div id="navbuttons" className="container-fluid text-center">
+                    <div className="col-md-12" style={{alignItems: "center"}}>
+                        <Link to="/bets/add"><Button style={{backgroundColor: "#3f51b5", color: "white", marginTop: "40px", marginBottom: "40px", marginRight: "20px"}}>Create New Bet</Button></Link>
+                        <Link to="/bets"><Button style={{backgroundColor: "#3f51b5", color: "white", marginTop: "40px", marginBottom: "40px", marginLeft: "20px"}}>View Active Bets</Button></Link>
+                    </div>
+                </div>
             </div>
         )
     }
 }
 
-function mapStateToProps(state) {
-    const {} = state;
-    return {
-    };
-}
-  
-interface DispatchProps {
-    setBet: typeof setBet;
-    setWeb3: typeof setWeb3;
-}
-  
-  export default connect(mapStateToProps, { setBet, setWeb3 } )(Home);
+ export default Home;
