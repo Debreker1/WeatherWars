@@ -92,8 +92,6 @@ class AddBet extends React.Component<Props, State> {
       accounts: accounts,
       betList: betList
     });
-
-    console.log(await betList.methods.GetContracts().call());
   }
 
   handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
