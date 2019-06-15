@@ -3,7 +3,7 @@ import { RouteComponentProps } from 'react-router';
 import WeatherBet from '../../contracts/BettingContract.json';
 import getWeb3 from '../../web3/getWeb3.js';
 import { fromUnixTime, format } from 'date-fns';
-import { FormControl, FormLabel, RadioGroup, FormControlLabel, Radio } from '@material-ui/core';
+import { FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, Input } from '@material-ui/core';
 
 
 enum status {
@@ -115,7 +115,7 @@ class BetDetails extends React.Component<Props, State> {
 
   public render() {
     return (
-      <div>
+      <div style={{marginTop: 50}}>
         <p>Dit is de pagina voor een specifieke bet. address is: {this.props.match.params.slug}</p>
         <p>Totaal in de pot: {this.state.totalBetAmount}</p>
         <p>Totaal aantal spelers: {this.state.players}</p>
@@ -123,6 +123,11 @@ class BetDetails extends React.Component<Props, State> {
         <p>Locatie: {this.state.location}</p>
         <p>Owner gokt op temparatuur: {this.state.ownerBet}</p>
         <p>Bet wordt gespeeld op: {this.state.date}</p>
+        <br/>
+
+        Deel met vrienden:<br/>
+        <input type="text" value={`localhost:3000${this.props.location.pathname}`} style={{borderRadius: 4, border: "3px #3F51B5 solid", width: 500, height: 40, paddingLeft: 5}} />
+        <br/><br/>
 
         <form onSubmit={this.joinGame}>
           <FormControl component="fieldset">
@@ -136,8 +141,8 @@ class BetDetails extends React.Component<Props, State> {
               <FormControlLabel disabled={this.state.fieldsDisabled} value="true" control={<Radio />} label="Hoger" />
               <FormControlLabel disabled={this.state.fieldsDisabled} value="false" control={<Radio />} label="Lager" />
             </RadioGroup>
-          </FormControl>
-          <input type="submit" value="Meespelen" />
+          </FormControl><br/>
+          <input type="submit" style={{border: "none", backgroundColor: "#3F51B5", color: "white", borderRadius: 5, padding: 7, marginTop: 15, fontSize: 15}} value="Meespelen" />
         </form>
       </div>
     )
