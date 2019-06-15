@@ -119,6 +119,14 @@ class AddBet extends React.Component<Props, State> {
     this.setState({ date: date });
   };
 
+  isPublic = () : boolean => {
+    if(this.state.visability === betVisability.Public) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   deployContract = async (e) => {
     e.preventDefault();
     if (this.state.date != null && isAfter(this.state.date!, new Date())) {
@@ -129,12 +137,12 @@ class AddBet extends React.Component<Props, State> {
         const valueAmount = await this.state.web3.utils.toWei(this.state.betAmount, "ether");
         const degrees = this.state.degrees;
         const location = this.state.city;
-
         const betDeploy = await this.state.betList.methods.createBet(
           amountOfSeconds,
           getUnixTime(this.state.date),
           degrees,
-          location
+          location,
+          this.isPublic()
         );
 
         const betAddress = await betDeploy.call();
