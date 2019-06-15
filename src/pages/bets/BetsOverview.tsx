@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {Link} from "react-router-dom";
 import { Card, CardActionArea, CardMedia, CardContent, Typography, CardActions, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { IContract } from '../../model';
@@ -56,33 +57,36 @@ class BetsOverview extends React.Component<Props, State> {
       };
       allBets.push(betInfo);
     });
-    this.setState({ contracts: allBets });
+     await this.setState({ contracts: allBets });
   }
+
 
   public render() {
     return (
       <div style={{ marginTop: 50 }}>
-        <Card style={{ maxWidth: 340 }}>
-          <CardActionArea>
+        {this.state.contracts.map((contract) => { return(
+          <Card key={contract.address} style={{ maxWidth: 340, minWidth: 390, float: "left", margin: 8 }}>
             <CardContent style={{ backgroundColor: "#ff6600", maxHeight: 60 }}>
               <Typography gutterBottom variant="h5" component="h2" style={{ fontWeight: 500, color: "white" }}>
-                Rotterdam
+                {contract.location}
           </Typography>
             </CardContent>
             <CardContent>
               <Typography variant="body2" component="p" style={{ fontSize: 16 }}>
-                Date: 20 September 19:15<br />
-                Guessed: 20 Degrees<br />
-                Stake: 10 ETH
+                Date: {contract.date}<br />
+                Guessed: {contract.ownerBet} Degrees<br />
+                Stake: {contract.totalBetAmount} ETH
           </Typography>
             </CardContent>
-          </CardActionArea>
           <CardActions>
-            <Button size="small" color="primary">
-              Join this bet
-        </Button>
+            <Link to={`/bets/${contract.address}`}>
+              <Button size="small" color="primary">
+                    Join this bet
+              </Button>
+            </Link>
           </CardActions>
         </Card>
+        )})}
       </div>
     )
   }

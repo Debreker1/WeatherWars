@@ -86,12 +86,6 @@ export default function ResponsiveDrawer(props) {
             <ListItemText primary={'All Bets'} />
           </ListItem>
         </Link>
-        <Link to="bets/my" style={{ textDecoration: 'none', color: "inherit" }}>
-          <ListItem button key={'My Bets'}>
-            <ListItemIcon><CloudIcon /></ListItemIcon>
-            <ListItemText primary={'My Bets'} />
-          </ListItem>
-        </Link>
       </List>
       <Divider />
     </div>

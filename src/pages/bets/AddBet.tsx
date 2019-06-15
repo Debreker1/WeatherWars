@@ -10,6 +10,7 @@ import { status } from '../../model';
 
 
 
+
 enum betVisability {
   Public = "Public",
   Private = "Private"
@@ -169,7 +170,7 @@ class AddBet extends React.Component<Props, State> {
 
   public render() {
     return (
-      <div>
+      <div style={{marginTop: 50}}>
         {this.state.redirect && this.handleRedirect(this.state.newContractAddress)}
         <form onSubmit={this.deployContract}>
           <TextField
@@ -184,7 +185,7 @@ class AddBet extends React.Component<Props, State> {
             }}
             margin="normal"
             disabled={this.state.fieldsDisabled}
-          />
+          /><br/>
           <TextField
             id="degrees"
             name="degrees"
@@ -197,7 +198,7 @@ class AddBet extends React.Component<Props, State> {
             }}
             margin="normal"
             disabled={this.state.fieldsDisabled}
-          />
+          /><br/>
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <KeyboardDateTimePicker
               margin="normal"
@@ -212,7 +213,7 @@ class AddBet extends React.Component<Props, State> {
                 'aria-label': 'Datum veranderen',
               }}
             />
-          </MuiPickersUtilsProvider>
+          </MuiPickersUtilsProvider><br/><br/>
           <FormControl>
             <InputLabel htmlFor="visability-select">Zichtbaarheid</InputLabel>
             <Select
@@ -222,17 +223,18 @@ class AddBet extends React.Component<Props, State> {
             >
               {visabilityOptions}
             </Select>
-          </FormControl>
+          </FormControl><br/><br/>
           <FormControl>
             <InputLabel htmlFor="city-select">Plaats</InputLabel>
             <Select value={this.state.city} disabled={this.state.fieldsDisabled} onChange={this.handleSelectChangeCity}>
               {CityOptions}
             </Select>
-          </FormControl>
-          <input type="submit" value="contract aanmaken" />
+          </FormControl><br/>
+          <input type="submit" style={{border: "none", backgroundColor: "#3F51B5", color: "white", borderRadius: 5, padding: 7, marginTop: 15, fontSize: 15}} value="contract aanmaken" />
         </form>
         <p>Huidige status: {this.state.status}</p>
         {this.state.newContractAddress && <p>Contract aangemaakt!: {this.state.newContractAddress}</p>}
+
       </div>
     )
   }
