@@ -1,11 +1,11 @@
 import * as React from 'react';
-import getWeb3 from '../../web3/getWeb3';
-import Betlist from '../../contracts/Betlist.json';
 import BetDetail from '../../components/BetDetail';
+import web3Handler from '../../classes/web3Handler';
 
 type Props = {};
 type State = {
-  contractsAddresses: string[]
+  contractsAddresses: string[],
+  handler: web3Handler
 };
 
 
@@ -14,20 +14,14 @@ class BetsOverview extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      contractsAddresses: []   
+      contractsAddresses: [],
+      handler: new web3Handler()
     }
   }
 
-  async componentDidMount() {
-    const web3 = await getWeb3();
-    web3.eth.transactionConfirmationBlocks = 1;
-    const networkId = await web3.eth.net.getId();
-    const deployedNetwork = Betlist.networks[networkId];
-    const betList = await new web3.eth.Contract(
-      Betlist.abi,
-      deployedNetwork && deployedNetwork.address,
-    );
-    this.setState({contractsAddresses: await betList.methods.GetContracts().call()})
+  async componentWillMount() {
+    const result: string[] = await this.state.handler.getAllBets();
+    this.setState({contractsAddresses: result})
   };
 
   mapContracts = () : any => {
