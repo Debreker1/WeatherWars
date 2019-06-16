@@ -77,15 +77,15 @@ export default function ResponsiveDrawer(props) {
           </ListItem>
         </Link>
         <Link to="/bets/add" style={{ textDecoration: 'none', color: "inherit" }}>
-          <ListItem button key={'Create Bet'}>
+          <ListItem button key={'Nieuwe Weddenschap'}>
             <ListItemIcon><AddIcon /></ListItemIcon>
-            <ListItemText primary={'Create Bet'} />
+            <ListItemText primary={'Nieuwe Weddenschap'} />
           </ListItem>
         </Link>
         <Link to="/bets" style={{ textDecoration: 'none', color: "inherit" }}>
-          <ListItem button key={'All Bets'}>
+          <ListItem button key={'Alle Weddenschappen'}>
             <ListItemIcon><CloudIcon /></ListItemIcon>
-            <ListItemText primary={'All Bets'} />
+            <ListItemText primary={'Alle Weddenschappen'} />
           </ListItem>
         </Link>
       </List>

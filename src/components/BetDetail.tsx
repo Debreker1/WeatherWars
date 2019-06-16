@@ -40,9 +40,9 @@ class BetDetail extends React.PureComponent<Props, State> {
           </CardContent>
           <CardContent>
             <Typography variant="body2" component="p" style={{ fontSize: 16 }}>
-              Date: {this.state.contract!.date}<br />
-              Guessed: {this.state.contract!.ownerBet} Degrees<br />
-              Stake: {this.state.contract!.totalBetAmount} ETH
+              Datum: {this.state.contract!.date}<br />
+              De Owner gokt: {this.state.contract!.ownerBet} Degrees<br />
+              Inzet: {this.state.contract!.totalBetAmount} ETH
         </Typography>
           </CardContent>
         <CardActions>
