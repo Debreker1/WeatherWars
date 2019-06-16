@@ -41,14 +41,14 @@ class BetDetail extends React.PureComponent<Props, State> {
           <CardContent>
             <Typography variant="body2" component="p" style={{ fontSize: 16 }}>
               Datum: {this.state.contract!.date}<br />
-              De Owner gokt: {this.state.contract!.ownerBet} Degrees<br />
+              De eigenaar gokt: {this.state.contract!.ownerBet} graden celsius<br />
               Inzet: {this.state.contract!.totalBetAmount} ETH
         </Typography>
           </CardContent>
         <CardActions>
           <Link to={`/bets/${this.props.address}`}>
             <Button size="small" color="primary">
-                  Join this bet
+                  Weddenschap bekijken
             </Button>
           </Link>
         </CardActions>

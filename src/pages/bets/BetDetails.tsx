@@ -84,8 +84,8 @@ class BetDetails extends React.Component<Props, State> {
             <p>Totaal aantal spelers: {this.state.contract!.players}</p>
             <p>Inleg om te mogen meespelen: {this.state.contract!.betAmount}</p>
             <p>Locatie: {this.state.contract!.location}</p>
-            <p>Owner gokt op temparatuur: {this.state.contract!.ownerBet}</p>
-            <p>Bet wordt gespeeld op: {this.state.contract!.date}</p>
+            <p>Eigenaar gokt op temperatuur: {this.state.contract!.ownerBet}</p>
+            <p>Weddenschap wordt gespeeld op: {this.state.contract!.date}</p>
             <br />
 
             Deel met vrienden:<br />
@@ -94,7 +94,7 @@ class BetDetails extends React.Component<Props, State> {
 
             <form onSubmit={this.joinGame}>
               <FormControl component="fieldset">
-                <FormLabel component="legend">Wordt de teparatuur hoger of lager?</FormLabel>
+                <FormLabel component="legend">Wordt de temperatuur hoger of lager?</FormLabel>
                 <RadioGroup
                   aria-label="guess"
                   name="guess"

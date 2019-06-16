@@ -134,7 +134,7 @@ class AddBet extends React.Component<Props, State> {
           <TextField
             id="degrees"
             name="degrees"
-            label="Graden"
+            label="Graden celsius"
             value={this.state.degrees}
             onChange={this.handleChange}
             type="number"
