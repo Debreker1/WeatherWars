@@ -101,9 +101,12 @@ class web3Handler {
                 const timestamRaw = await weatherContract.methods.timestamp().call();
                 const date = format(fromUnixTime(timestamRaw.toNumber()), 'dd-MM-yyyy HH:mm');
 
+                const weatherResultRaw = await weatherContract.methods.weatherResult().call();
+                const weatherResult: number = weatherResultRaw.toNumber();
+                
 
                 const totalBetAmount: number = (betAmount * players);
-                const betDetails: IContract = { address, betAmount, players, ownerBet, totalBetAmount, location, date }
+                const betDetails: IContract = { address, betAmount, players, ownerBet, totalBetAmount, location, date, weatherResult}
                 resolve(betDetails);
             } catch (error) {
                 console.error(error);

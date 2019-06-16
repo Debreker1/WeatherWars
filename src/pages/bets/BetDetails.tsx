@@ -87,7 +87,8 @@ class BetDetails extends React.Component<Props, State> {
             <p>Eigenaar gokt op temperatuur: {this.state.contract!.ownerBet}</p>
             <p>Weddenschap wordt gespeeld op: {this.state.contract!.date}</p>
             <br />
-
+            {(this.state.contract!.weatherResult === 0) && (
+            <>
             Deel met vrienden:<br />
             <input type="text" readOnly={true} value={window.location.href} style={{ borderRadius: 4, border: "3px #3F51B5 solid", width: 500, height: 40, paddingLeft: 5 }} />
             <br /><br />
@@ -107,6 +108,8 @@ class BetDetails extends React.Component<Props, State> {
               </FormControl><br />
               <input type="submit" style={{ border: "none", backgroundColor: "#3F51B5", color: "white", borderRadius: 5, padding: 7, marginTop: 15, fontSize: 15 }} value="Meespelen" />
             </form>
+            </>
+            )}
           </>
         )}
       </div>

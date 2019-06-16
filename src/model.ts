@@ -6,6 +6,7 @@ export interface IContract {
     totalBetAmount: number;
     location: string;
     date: string;
+    weatherResult: number;
 }
 
 export enum status {
