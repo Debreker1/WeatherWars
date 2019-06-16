@@ -18,7 +18,11 @@ class web3Handler {
 
     private async loadAccounts() {
         try {
+            await window.ethereum.enable();
             this.accounts = await this.web3.eth.getAccounts();
+            window.ethereum.on('accountsChanged', async (accounts: string[]) => {
+                this.accounts = accounts;
+            });
         } catch (error) {
             console.log(error);
         }
