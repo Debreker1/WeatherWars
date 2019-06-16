@@ -6,7 +6,11 @@ import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
+
 import CloudIcon from '@material-ui/icons/Cloud';
+import AddIcon from '@material-ui/icons/AddCircle';
+import HomeIcon from '@material-ui/icons/Home';
+
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -68,13 +72,13 @@ export default function ResponsiveDrawer(props) {
       <List>
         <Link to="/" style={{ textDecoration: 'none', color: "inherit" }}>
           <ListItem button key={'Home'}>
-            <ListItemIcon><CloudIcon /></ListItemIcon>
+            <ListItemIcon><HomeIcon /></ListItemIcon>
             <ListItemText primary={'Home'} />
           </ListItem>
         </Link>
         <Link to="/bets/add" style={{ textDecoration: 'none', color: "inherit" }}>
           <ListItem button key={'Create Bet'}>
-            <ListItemIcon><CloudIcon /></ListItemIcon>
+            <ListItemIcon><AddIcon /></ListItemIcon>
             <ListItemText primary={'Create Bet'} />
           </ListItem>
         </Link>
