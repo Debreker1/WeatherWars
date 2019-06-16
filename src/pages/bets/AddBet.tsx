@@ -1,37 +1,15 @@
 import * as React from 'react';
-import Betlist from '../../contracts/Betlist.json';
 import { FormControl, InputLabel, TextField, Select, MenuItem } from '@material-ui/core';
 import { KeyboardDateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { Redirect } from 'react-router';
-import { differenceInSeconds, isAfter, getUnixTime } from 'date-fns';
-import getWeb3 from '../../web3/getWeb3.js';
+import { isAfter} from 'date-fns';
 import { status } from '../../model';
-
-
-
-
-enum betVisability {
-  Public = "Public",
-  Private = "Private"
-}
-
-enum City {
-  Rotterdam = "Rotterdam",
-  Amsterdam = "Amsterdam",
-  Den_Haag = "Den Haag",
-  Utrecht = "Utrecht",
-  Groningen = "Groningen",
-  Leeuwarden = "leeuwarden",
-  Den_bosch = "Den Bosch",
-  Eindhoven = "Eindhoven",
-  Tilburg = "Tilburg"
-}
+import web3Handler from '../../classes/web3Handler';
+import {betVisability, City} from '../../model';
 
 type Props = {};
 type State = {
-  web3: any,
-  accounts: string[],
   betAmount: string,
   status: status,
   redirect: boolean,
@@ -41,18 +19,19 @@ type State = {
   newContractAddress: string,
   city: City,
   degrees: number,
-  betList: any
+  betList: any,
+  handler: web3Handler
 };
 
-const visabilityOptions = Object.values(betVisability).map(k => {
+const visabilityOptions = Object.values(betVisability).map((value, index) => {
   return (
-    <MenuItem value={k}>{k.toString()}</MenuItem>
+    <MenuItem key={index} value={value}>{value.toString()}</MenuItem>
   );
 });
 
-const CityOptions = Object.values(City).map(k => {
+const CityOptions = Object.values(City).map((value, key) => {
   return (
-    <MenuItem value={k}>{k.toString()}</MenuItem>
+    <MenuItem key={key} value={value}>{value.toString()}</MenuItem>
   );
 });
 
@@ -61,8 +40,6 @@ class AddBet extends React.Component<Props, State> {
   constructor(props) {
     super(props);
     this.state = {
-      web3: null,
-      accounts: [],
       betAmount: "1",
       status: status.Add,
       redirect: false,
@@ -72,26 +49,9 @@ class AddBet extends React.Component<Props, State> {
       newContractAddress: '',
       city: City.Rotterdam,
       degrees: 15,
-      betList: null
+      betList: null,
+      handler: new web3Handler()
     }
-  }
-
-  async componentDidMount() {
-    const web3 = await getWeb3();
-    web3.eth.transactionConfirmationBlocks = 1;
-    const accounts = await web3.eth.getAccounts();
-    const networkId = await web3.eth.net.getId();
-    const deployedNetwork = Betlist.networks[networkId];
-    const betList = await new web3.eth.Contract(
-      Betlist.abi,
-      deployedNetwork && deployedNetwork.address,
-    );
-    this.setState({
-      ...this.state,
-      web3: web3,
-      accounts: accounts,
-      betList: betList
-    });
   }
 
   handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -131,27 +91,14 @@ class AddBet extends React.Component<Props, State> {
     if (this.state.date != null && isAfter(this.state.date!, new Date())) {
       try {
         this.setState({ status: status.Deploying, fieldsDisabled: true });
-        const amountOfSeconds = differenceInSeconds(this.state.date, new Date());
-        const account = this.state.accounts[0];
-        const valueAmount = await this.state.web3.utils.toWei(this.state.betAmount, "ether");
-        const degrees = this.state.degrees;
-        const location = this.state.city;
-        const betDeploy = await this.state.betList.methods.createBet(
-          amountOfSeconds,
-          getUnixTime(this.state.date),
-          degrees,
-          location,
-          this.isPublic()
-        );
+        const betAmount: string = this.state.betAmount;
+        const date: Date = this.state.date!;
+        const degreeGuess: number = this.state.degrees;
+        const location: string = this.state.city;
+        const isPublic: boolean = this.isPublic();
 
-        const betAddress = await betDeploy.call();
+        const betAddress = await this.state.handler.deployBet(betAmount, date, degreeGuess, location, isPublic);
 
-        await betDeploy.send({
-          from: account,
-          value: valueAmount,
-          gas: 3000000
-        });
-        
         this.setState({ status: status.Done, newContractAddress: betAddress });
         window.setTimeout(() => { this.setState({ redirect: true }) }, 3000);
       } catch (err) {
