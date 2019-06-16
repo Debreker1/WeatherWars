@@ -29,7 +29,7 @@ class Home extends React.Component<Props, State>
                         <div className="col-md-12">
                             <h3 style={{textAlign: "center", margin: "40px"}}>What is Weather Wars?</h3>
                             {/* TODO: align image to center */}
-                            <img src="https://i1.wp.com/metro.co.uk/wp-content/uploads/2018/02/ios_weather_icons-e1519660727179.png?quality=90&strip=all&zoom=1&resize=644%2C483&ssl=1" style={{height: 322, width: 421, display: "block", marginRight: "auto", marginLeft: "auto"}}></img>
+                            <img alt="Weer types" src="https://i1.wp.com/metro.co.uk/wp-content/uploads/2018/02/ios_weather_icons-e1519660727179.png?quality=90&strip=all&zoom=1&resize=644%2C483&ssl=1" style={{height: 322, width: 421, display: "block", marginRight: "auto", marginLeft: "auto"}}></img>
                             <p style={{textAlign: "center", marginLeft: "400px", marginRight: "400px", marginBottom: "40px"}}>Weather Wars is a web-application which allows users to bet on the weather. Users bet Ether and try to predict the weather in a certain place, at a certain time. Players are able to create and join both private and public bets. Furthermore, Weather Wars has functionality for group bets.</p>
                             <p style={{textAlign: "center", marginLeft: "400px", marginRight: "400px", marginBottom: "40px"}}>Because Weather Wars is on a blockchain, any Ethereum transactions will be transferred safely and nearly instantaneously.</p>
                             
